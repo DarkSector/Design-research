@@ -1,0 +1,156 @@
+{% extends "layout.html" %}
+
+{% block js %}
+<script type="text/javascript"
+    src="/static/js/sijax/sijax.js"></script>
+<script type="text/javascript">
+    {{ g.sijax.get_js()|safe }}
+</script>
+<script type="text/javascript">
+	jQuery.fn.reset = function () {
+	  $(this).each (function() { this.reset(); });
+	}
+</script>
+
+<script src="{{ url_for('static', filename='js/libs/bootstrap/modal.js') }} "></script>
+<script src="{{ url_for('static', filename='js/libs/bootstrap/tab.js') }} "></script>
+{% block inheritjs %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/libs/bootstrap/modal.js')}}"></script>
+{# All inherited javascript goes here#}
+{# ##################################################################### #}
+{% endblock %}
+{% endblock %}
+
+{% block body %}
+
+{% if create_session %}
+{% block secondary %}
+{# this is where the inherited content is kept #}
+{# ##################################################################### #}
+{% endblock %}
+
+{% else %}
+{# this is where the content of the panel not anything that is inherited #}
+<div class="panelblock" style="min-height: 500px;">
+	<h1>Administrative Panel</h1>
+	<hr />
+	<div class="tabbable tabs-left" >
+		<div class="row">
+			<div class="span2">
+				<ul class="nav nav-tabs" style="min-height: 500px;">
+					<li class="active"><a href="#allsessions" data-toggle="tab">Sessions </a></li>
+	        		<li><a href="#reports" data-toggle="tab">Reports</a></li>
+		   			<li><a href="#images" data-toggle="tab">Images</a></li>
+					<li><a href="#ui" data-toggle="tab">UI Settings </a></li>
+	 			</ul>
+			</div><!-- span2  -->
+			<div class="span10">
+				<div class="tab-content">
+					<div class="tab-pane active" id="allsessions">	            
+						<h2>All created sessions</h2>
+						<hr />
+						{% for single in allsessions %}
+						<a style="float:right" class="btn btn-primary" data-toggle="modal" href="#modal{{ single['_id']}}"><i class="icon-edit icon-white"></i> Attributes</a>
+							<h2>{{ single.name }} <br /><small><a href="{{ url_for('get_session', session_id = single.unique )}}">Click here to go to the Session</a></small></h2> 
+							<p class="lead">"{{ single.description }}"</p>
+							<span id="date" style="font-size: 13px;" class="label label-inverse">{{ single.day }}.{{ single.month }}.{{ single.year }}</span><br /><br />
+							{% if single.status == "inactive" %}
+								<span id="sessionstatus" style="font-size: 20px;" class="label label-important">Inactive</span>
+								<a id="sessionchange" style="float: right;" href="javascript://" class="btn btn-success btn-large" onclick="Sijax.request('activate_session', ['{{single['unique']}}']);"><i class="icon-play-circle icon-white"></i> Activate</a>
+							{% elif single.status == "active"%}
+								<span id="sessionstatus" style="font-size: 20px;" class="label label-success">Active</span>
+								<a id="sessionchange" style="float: right;" href="javascript://" class="btn btn-danger btn-large" onclick="Sijax.request('deactivate_session', [ '{{single['unique']}}' ] );" ><i class="icon-off icon-white"></i> De-activate</a>
+								
+							{% endif %}
+							<p>&nbsp;</p>
+							<a style="float: right" href="javascript://" onclick="Sijax.request('delete_session', ['{{single['unique']}}']);" class="btn btn-danger"><i class="icon-trash icon-white"></i> Delete this session</a>												
+							<p>&nbsp;</p>
+							<p>&nbsp;</p>
+							<hr />
+						<div class="modal hide fade in" id="modal{{ single['_id']}}">	
+							<div class="modal-header">
+								<a href="" class="close" data-dismiss="modal">&times;</a>
+								<h1>{{ single['name'] }}</h1>
+							</div>
+							<div class="modal-body">
+								<ol>
+									<li>Session type: {% if single['require_auth'] == "yes" %}CLOSED{% else %}OPEN{% endif %}</li>
+									<li>Pass phrase : {{ single['auth_passphrase'] }} </li>
+									<li>Session <strong>{% if single['personalinfo'] == "yes" %}will{% else %}will not{% endif %}</strong> collect personal information from the user</li>
+								</ul>	
+							</div>
+							<div class="modal-footer">
+								<a href="" data-dismiss="modal" class="btn btn-primary">Close</a>			
+							</div>	
+						</div>	
+
+						{% endfor %}
+		    		</div>
+					<div class="tab-pane" id="reports">	            
+						<h2>Reports and other generated documents</h2>
+		    		</div>
+					<div class="tab-pane" id="images">	            
+						<h2>Uploaded images and their groups</h2>
+						<hr />
+						<div id="groups">
+						<h3>Groups</h3>
+						<h6>Existing groups:</h6>
+						<select id="groupname">
+							<option value="None">Click to select</option>
+							{% for group in allgroups %}
+							<option id="group{{group['_id']}}" value="{{group['name']}}">{{ group['name']}} </option>
+							{% endfor %}
+							
+						</select>
+						<a href="javascript://" onclick="Sijax.request('delete_group', [ $('#groupname').attr('value')] );" >Delete selected group</a>
+						<br />
+						
+						<h6>Create a new group</h6>
+						<form id="newgroupform">
+						<input placeholder="Type in a new group name" type="text" id="newgroupname" /></form>
+						<a href="javascript://" onclick="Sijax.request('create_group', [ $('#newgroupname').attr('value')] );" id="creategroup" class="btn btn-primary">Create</a>
+
+						</div>
+						<hr />
+						<div class="actualimages">
+						<h3>Already uploaded</h3>
+						<ul class="thumbnails">
+						{% for image in allimages %}
+						  <li class="span3" id="image{{ image['_id'] }}">
+						    <div class="thumbnail">
+								<img src="/static/img/uploads/{{ image['name'] }}" alt="" />								
+						     	<div class="caption">
+									<h5>{{ image['name'] }}</h5>
+									<br />
+									{% if not image['groups'] %}
+									<p>No group</p>
+									{% else %}
+									<p>
+									{% for onegroup in image['groups'] %}
+									<span class="label label-warning">{{ onegroup }}</span>
+									{% endfor %}
+									</p>
+									{% endif %}
+									<p>
+										<a href="javascript://" onclick="Sijax.request('add_to_group', [ '{{image['_id']}}',$('#groupname').attr('value') ] );" class="btn"><i class="icon-plus"></i>Add to group</a>
+										<a href="javascript://" onclick="Sijax.request('delete_image', [ '{{image['_id']}}' ] );" class="btn btn-primary"><i class="icon-trash icon-white"></i> Delete</a>	
+									</p>	
+								 </div>
+						    </div>
+						  </li>
+						{% endfor %}
+						</ul>
+						</div><!-- actualimages -->
+		    		</div><!-- images -->			
+					<div class="tab-pane" id="ui">	            
+						These are the UI settings for the application
+		    		</div>
+		  		</div>		  		
+			</div>	
+	</div>
+</div>
+
+<hr />
+{# ##################################################################### #}
+{% endif %}
+{% endblock %}

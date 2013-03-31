@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+	<title></title>
+	<meta name="description" content="Skeleton">
+	<meta name="author" content="Pronoy Chopra">
+
+	<meta name="viewport" content="width=device-width">
+
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css' ) }} ">
+	<link href="http://fonts.googleapis.com/css?family=Vollkorn&subset=latin" rel="stylesheet" type="text/css">
+	<style>
+	body {
+	  padding-top: 60px;
+	  padding-bottom: 40px;
+	}
+	</style>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-responsive.css') }} ">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }} ">
+
+	<script src="{{ url_for('static', filename='js/libs/modernizr-2.5.3-respond-1.1.0.min.js') }} "></script>
+</head>
+<body>
+<!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="{{ url_for('hello')}}">Design Research Toolkit<small style="color: #ff6633; font-size: 15px;"> β</small></a>
+		
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li{% if urlkey == "home" %} class="active"{% endif %}><a href="{{ url_for('hello') }}">Home</a></li>
+              <li{% if urlkey == "panel" %} class="active"{% endif %}><a href="{{ url_for('panel') }}">Panel</a></li>
+			  <li{% if create_session %} class="active"{% endif %}><a href="{{ url_for('create_session') }}">Create Session</a></li>
+			  <li{% if urlkey == "upload" %} class="active"{% endif %}><a href="{{ url_for('upload_images')}}">Upload</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+		
+        </div>
+      </div>
+    </div>
+
+
+    <div class="container">
+
+	{% block body %}
+	{% endblock %}
+
+      <footer>
+        <p>&copy; <a href="http://www.pronoy.in">Pronoy Chopra</a> 2012</p>
+      </footer>
+
+    </div> <!-- /container -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="/static/js/libs/jquery-1.7.1.min.js"><\/script>')</script>
+
+<script src="{{ url_for('static' ,filename='js/plugins.js') }} "></script> 
+<script src="{{ url_for('static', filename='js/script.js') }} "></script>
+<script src="{{ url_for('static', filename='js/libs/bootstrap/collapse.js') }} "></script>
+{% block js %}
+{% endblock %}
+
+</body>
+</html>

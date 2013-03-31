@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+{% block js %}
+
+<script type="text/javascript"
+    src="/static/js/sijax/sijax.js"></script>
+<script type="text/javascript">
+	{{ g.sijax.get_js()|safe }}
+</script>
+
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	window._similar = [];
+	window._different = [];
+	
+	$(".draggable").draggable();
+	$("#similar").droppable({
+		drop: function(event,ui){
+			_similar.push(ui.draggable.attr("id"));
+			//alert(_similar);
+		},
+		out: function(event,ui){
+			_similar.pop(ui.draggable.attr("id"));
+		}	
+		
+	});
+	$("#different").droppable({
+		drop: function(event,ui){
+			_different.push(ui.draggable.attr("id"));
+			//alert(_different);
+		},
+		out: function(event,ui){
+			_different.pop(ui.draggable.attr("id"));
+		}
+		
+	});	
+});
+</script>
+{% endblock %}
+
+{% block body%}
+<div id="step1">
+	<h1>Step 1</h1>
+	<p class="lead">Select 2 images which seem to be similar and drop them in the box on the left and drop the different one in the box on the right.</p>
+	<hr />
+	<ul class="thumbnails">
+		{% for image in allimages %}
+    	<li id="id{{image['name']}}" class="draggable span3">
+			<img src="/static/img/uploads/{{image['name']}}" alt="" />
+    	</li>
+		{% endfor %}
+    </ul>	
+
+	<div class="row">
+		<div class="span6">
+			<div id="similar" style="min-height: 200px;">
+				<div class="span3 offset2">
+					<h1 id="back-heading">Similar</h1>
+				</div>
+			</div><!--droppable1 ends -->
+			<p>&nbsp;</p>
+			<form>
+				<textarea id="similarreason" placeholder="Please type a very short reason for why you think these two images are similar" class="span6" rows="4" ></textarea>	
+			</form>
+		</div><!-- span6 ends -->
+		
+		<div class="span6">
+			<div id="different" style="min-height: 200px;">
+				<div class="span3 offset2">
+					<h1 id="back-heading">Different</h1>
+				</div>
+			</div><!--droppable1 ends -->
+			<p>&nbsp;</p>
+			<form>
+				<textarea id="differentreason" placeholder="Please type a very short reason for why you think this image is different" class="span6" rows="4" ></textarea>	
+			</form>
+		</div><!-- span6 ends -->
+
+	</div>	<!--  row ends -->
+	<a href="javascript://" onclick="Sijax.request('step1_parse', [window._similar,$('#similarreason').attr('value'), window._different, $('#differentreason').attr('value')]);" class="btn btn-primary btn-large"><i class="icon-ok icon-white"></i> Proceed to the next step</a>												
+	
+	<hr />
+</div>	
+
+<div id="step2" class="hide fade in">
+	
+</div>	
+
+<div id="step3" class="hide fade in">
+	
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="row">
+	<div class="span4">
+		<div class="hero-unit">
+			<h1>Upload images</h1>
+			<hr />
+			<form class="form" action="" enctype="multipart/form-data" method="POST" >
+				<label>Click on the button below and choose the files</label>
+				<input type=file multiple name="file" class="span7" /><br /><hr />
+				<input class="btn btn-primary" type="submit" value="Upload Images">			
+			</form>
+		</div>
+	</div>
+	<div class="span8">
+		<h1>Already uploaded:</h1>
+		<hr />
+		<ul class="thumbnails">
+			{% for img in uploaded %}
+			<li class="span1 thumbnail">
+			      <img src="/static/img/uploads/{{ img['name'] }}" alt="" />
+			{% endfor %}
+		</ul>
+	</div>
+</div>
+{% endblock %}

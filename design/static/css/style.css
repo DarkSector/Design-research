@@ -1,0 +1,24 @@
+
+
+/* ===== Primary Styles ========================================================
+   Author:
+   ========================================================================== */
+
+
+#similar, #different
+{
+	background-color: #eee;
+	-webkit-border-radius: 15px;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+}
+
+#back-heading
+{
+	color: #aaaaaa;
+}
+
+.standard
+{
+	min-height: 100px;
+}

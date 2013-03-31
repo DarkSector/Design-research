@@ -1,0 +1,148 @@
+{% extends "panel.html" %}
+{% block inheritjs %}
+<script type="text/javascript" src="{{ url_for('static',filename='js/libs/bootstrap/alert.js')}}">
+</script>
+<script type="text/javascript" src="{{ url_for('static',filename='js/libs/bootstrap/transition.js')}}">
+</script>
+
+<script type="text/javascript">
+$(function() {          
+    $('#newsessionform').bind('submit', function() {
+        Sijax.request('create_session', 
+		[$('#session_name').attr('value'), $('#scale').attr('value'), $('#description').attr('value')]);
+        return false;
+    });
+
+	$('#session2form').bind('submit', function() {
+        Sijax.request('create_session2', [$('#minsets').attr('value'), $('#personalinfo').attr('value'), $('#startauth').attr('value'), $('#authphrase').attr('value')]);
+        return false;
+    });
+
+
+});
+</script>
+{% endblock %}
+
+{% block secondary %}
+<div class="alert show alert-danger" id="myalert">
+
+		 <a href="#" class="close" data-dismiss="alert">×</a>
+		<h2>Attention</h2>
+
+	<div class="modal-body">
+		<p>Before you proceed be sure to create groups of your images in the panel. You can then directly select a group and add it to the session.</p>
+	</div>	
+
+		<a href="" class="btn" data-dismiss="alert">Close</a>
+		<a href="{{ url_for('panel')}}" class="btn btn-primary">Take me to the panel</a>
+
+</div>
+
+
+<div class="row">
+	<div class="span4">
+		<div id="session1" class="fade in">
+			<h1>Step 1:</h1>
+			<div id="session1super" class="hide fade in" style="min-height: 200px;">
+				<h2>Complete</h2>
+				<h3 id="sessionnamereturn" style="color: #ff6633">Name of the session: </h3>
+
+			</div>	
+			<div id="session1sub" class="show fade in">
+			<br /><br />
+			<h3>Create Session</h3>
+			<hr />
+			<form id="newsessionform">
+				<label>Enter the name of the session</label>
+				<input type="text" placeholder="example: IIT Delhi IDDC" name="session_name" id="session_name"/>				
+				<hr />
+				<label>Scale</label>
+				<select id="scale">
+					<option value="10">Default: Scale of 10</option>
+					<option value="7">Scale of 7</option>
+				</select>
+
+				<hr />
+				<textarea id="description" placeholder="Short description about this session for future references" class="span4" rows="6"></textarea><br />
+				<hr />
+				<button class="btn btn-primary">Done, What's next?</button>
+			</form>
+			
+			</div>
+		</div>	
+	</div>
+	
+	
+	<div class="span4">
+		<div id="session2" class="hide fade in ">
+			<h1>Step 2:</h1>
+			<div id="session2super" class="hide fade in" style="min-height: 200px;">
+				<h2>Complete</h2>
+				<h3 id="sessiontypereturn" style="color: #0099FF">Session Type: </h3>
+				<h4 id="sessionpassreturn" style="color: #0099FF">Session Passphrase: </h4>
+
+			</div>
+			<div id="session2sub" class="show fade in">
+			<br /><br />
+			<h3>Session properties</h3>
+			<hr />
+			
+			<form id="session2form">
+				<label>Minimum Sets</label>
+				<select id="minsets">
+					{% for i in range(1,11) %}
+						<option value="{{ i }}">{{ i }}</option>
+					{% endfor %}	
+				</select>	
+				<br />
+				<small>Only if user tries to quit in the first run</small>
+				<hr />
+			
+				Collect personal information? 
+				<select id="personalinfo">
+					<option value="yes">Yes</option>
+					<option value="no">No</option>
+				</select>	
+				<br />
+				Require Authentication? 
+				<br />
+				<select id="startauth">
+					<option value="yes">Yes</option>
+					<option value="no">No</option>
+				</select>
+				<input type="text" placeholder="Authentication passphrase" name="authphrase" id="authphrase"/>
+				
+				<hr />
+				<button class="btn btn-primary">Select image group for this set</button>
+			</form>	
+			</div>
+		</div>
+	</div>
+	
+	<div class="span4">
+		<div id="session3" class="hide fade in">
+			<h1>Step3: </h1>
+			<div id="session3super" class="hide fade in" style="min-height: 200px;">
+				<h2>Complete</h2>
+
+			</div>
+			<div id="session3sub" class="show">
+			<select id="groupselect">
+				<option>Click to select</option>
+				{% for group in allgroups %}
+				<option value="{{group['name']}}">{{ group['name']}}</option>
+				{% endfor %}
+			</select>	
+			<a href="javascript://" onclick="Sijax.request('create_session3', [$('#groupselect').attr('value')]);" class="btn btn-primary">Finished! Create my session!</a>
+			</div>
+		</div>
+	</div>
+		
+</div>
+<div id="congratulations" class="alert alert-success hide fade in">
+	<h1>That's it!</h1>
+	<p>You've created your session! Go to the control panel to activate it and then let the application take care of the rest</p>
+	<a href="{{ url_for('panel') }}" class="btn btn-large">Excellent! Take me there</a>
+</div>	
+<hr />
+{% endblock %}

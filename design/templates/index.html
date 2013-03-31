@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<div class="hero-unit">
+	<h1>Design Research Toolkit<small style="color: #ff6633; font-size: 30px;"> β</small></h1>
+	<br />
+	<p>This is the Design Research Toolkit (DRT) created at the Instrument Design &#38; Development Center. <br />
+	Indian Institute Of Technology, New Delhi </p>
+	<a href="/about" class="btn btn-primary">Know more</a>
+</div>	
+<div class="hero-unit">
+	<h2>List of active/ongoing sessions</h2>
+	<br />
+		{% for active in allresearchsessions %}
+		<p><a href="{{url_for('get_session', session_id=active['unique'])}}">{{ active['name'] }}</a></p>
+		{% endfor %}
+</div>
+{% endblock %}
